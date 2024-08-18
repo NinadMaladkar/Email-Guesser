@@ -5,10 +5,8 @@ const emailGuesserService = async (
   lastName: string,
   companyDomain: string
 ) => {
-  const emailGuesserUrl = process.env.EMAIL_GUESSER_URL || '';
-  console.log('Email guesser service', firstName, lastName, companyDomain);
-
-  const result = await axios.get('http://localhost:3001/email', {
+  const emailGuesserUrl = 'http://localhost:3001/email';
+  const result = await axios.get(emailGuesserUrl, {
     params: {
       firstName,
       lastName,
