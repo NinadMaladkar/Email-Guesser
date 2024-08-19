@@ -6,14 +6,19 @@ const emailGuesserService = async (
   companyDomain: string
 ) => {
   const emailGuesserUrl = 'http://localhost:3001/email';
-  const result = await axios.get(emailGuesserUrl, {
-    params: {
-      firstName,
-      lastName,
-      companyDomain,
-    },
-  });
-  return result.data;
+
+  try {
+    const result = await axios.get(emailGuesserUrl, {
+      params: {
+        firstName,
+        lastName,
+        companyDomain,
+      },
+    });
+    return result.data;
+  } catch (error: any) {
+    throw error.response?.data.message;
+  }
 };
 
 export default emailGuesserService;

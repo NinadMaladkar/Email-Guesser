@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Query, ValidationPipe } from '@nestjs/common';
 
 import { EmailService } from './email.service';
 import { EmailGuesserDto } from '../dtos/email-gusser.dto';
@@ -9,10 +9,10 @@ export class EmailController {
 
   @Get()
   async getPersonEmail(
-    @Query('firstName') firstName: string,
-    @Query('lastName') lastName: string,
-    @Query('companyDomain') companyDomain: string,
+    @Query(new ValidationPipe({ transform: true }))
+    emailGuesserDto: EmailGuesserDto,
   ) {
+    const { firstName, lastName, companyDomain } = emailGuesserDto;
     return this.emailService.getPersonEmail(firstName, lastName, companyDomain);
   }
 }

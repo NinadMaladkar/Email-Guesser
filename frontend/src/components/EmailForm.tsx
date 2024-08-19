@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../styles/EmailForm.css';
-import EmailResults from './EmailResults';
 import emailGuesserService from '../services/emailGuesserService';
 
 const EmailForm = () => {
@@ -9,18 +8,37 @@ const EmailForm = () => {
   const [companyDomain, setCompanyDomain] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
+    setEmail('');
+    if (!firstName.trim() || !lastName.trim() || !companyDomain.trim()) {
+      setError('Please fill in all fields');
+      setIsLoading(false);
+      return;
+    }
 
-    const emailResult = await emailGuesserService(
-      firstName,
-      lastName,
-      companyDomain
-    );
-    setEmail(emailResult);
-    setIsLoading(false);
+    if (firstName.trim().match(' ') || lastName.trim().match(' ')) {
+      setError('First name and last name cannot contain spaces');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const emailResult = await emailGuesserService(
+        firstName.trim(),
+        lastName.trim(),
+        companyDomain
+      );
+      setEmail(emailResult);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error));
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,6 +51,7 @@ const EmailForm = () => {
           className='first-name-input'
           placeholder='First Name'
           value={firstName}
+          maxLength={20}
           onChange={(e) => setFirstName(e.target.value)}
         />
         <input
@@ -40,6 +59,7 @@ const EmailForm = () => {
           className='last-name-input'
           placeholder='Last Name '
           value={lastName}
+          maxLength={20}
           onChange={(e) => setLastName(e.target.value)}
         />
         <input
@@ -53,9 +73,9 @@ const EmailForm = () => {
           Submit
         </button>
       </form>
-
       {isLoading && <p>Loading...</p>}
-      {email && <EmailResults email={email} />}
+      {email && <p className='email-result'>{email}</p>}
+      {error && <p className='error-message'>{error}</p>}
     </div>
   );
 };
