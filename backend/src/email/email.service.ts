@@ -27,7 +27,7 @@ export class EmailService {
       );
     }
     const contactPerson = await this.contactPersonRepository.findOne({
-      where: { email: Like(`%${companyDomain}%`) },
+      where: { email: Like(`%${companyDomain.toLowerCase()}%`) },
     });
 
     if (!contactPerson) {
@@ -50,6 +50,8 @@ export class EmailService {
       return EMAIL_FORMAT.FIRST_NAME_LAST_NAME;
     } else if (email.startsWith(firstName[0]) && email.includes(lastName)) {
       return EMAIL_FORMAT.FIRST_NAME_INITIAL_LETTER_LAST_NAME;
+    } else {
+      throw new NotFoundException('No email format found');
     }
   }
 
@@ -61,11 +63,11 @@ export class EmailService {
   ) {
     switch (emailFormat) {
       case EMAIL_FORMAT.FIRST_NAME_LAST_NAME:
-        return `${firstName.toLowerCase()}${lastName.toLowerCase()}@${companyDomain}`;
+        return `${firstName.toLowerCase()}${lastName.toLowerCase()}@${companyDomain.toLowerCase()}`;
       case EMAIL_FORMAT.FIRST_NAME_INITIAL_LETTER_LAST_NAME:
-        return `${firstName[0].toLowerCase()}${lastName.toLowerCase()}@${companyDomain}`;
+        return `${firstName[0].toLowerCase()}${lastName.toLowerCase()}@${companyDomain.toLowerCase()}`;
       default:
-        throw new Error('Unknown email format');
+        throw new NotFoundException('Email format not found');
     }
   }
 }
