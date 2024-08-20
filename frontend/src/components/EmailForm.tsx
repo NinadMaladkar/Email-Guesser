@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../styles/EmailForm.css';
-import emailGuesserService from '../services/emailGuesserService';
+import styled from 'styled-components';
+import getEmail from '../services/emailGuesserService';
 
 const EmailForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -28,10 +28,10 @@ const EmailForm = () => {
     }
 
     try {
-      const emailResult = await emailGuesserService(
+      const emailResult: string = await getEmail(
         firstName.trim(),
         lastName.trim(),
-        companyDomain
+        companyDomain.trim()
       );
       setEmail(emailResult);
       setIsLoading(false);
@@ -42,42 +42,114 @@ const EmailForm = () => {
   };
 
   return (
-    <div className='email-form'>
-      <h1 className='email-guesser-title'>Email Guesser</h1>
-      <hr className='email-guesser-hr' />
-      <form onSubmit={handleSubmit}>
-        <input
+    <EmailFormContainer>
+      <Title>Email Guesser</Title>
+      <Hr />
+      <Form onSubmit={handleSubmit}>
+        <Input
           type='text'
-          className='first-name-input'
           placeholder='First Name'
           value={firstName}
           maxLength={20}
-          onChange={(e) => setFirstName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFirstName(e.target.value)
+          }
         />
-        <input
+        <Input
           type='text'
-          className='last-name-input'
-          placeholder='Last Name '
+          placeholder='Last Name'
           value={lastName}
           maxLength={20}
-          onChange={(e) => setLastName(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setLastName(e.target.value)
+          }
         />
-        <input
+        <Input
           type='text'
-          className='company-domain-input'
           placeholder='Company Domain'
           value={companyDomain}
-          onChange={(e) => setCompanyDomain(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setCompanyDomain(e.target.value)
+          }
         />
-        <button type='submit' className='submit-button'>
-          Submit
-        </button>
-      </form>
+        <SubmitButton type='submit'>Submit</SubmitButton>
+      </Form>
       {isLoading && <p>Loading...</p>}
-      {email && <p className='email-result'>{email}</p>}
-      {error && <p className='error-message'>{error}</p>}
-    </div>
+      {email && <EmailResult>Derived email: {email}</EmailResult>}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </EmailFormContainer>
   );
 };
 
 export default EmailForm;
+
+const EmailFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+`;
+
+const Title = styled.h1`
+  font-size: 48px;
+  color: #000;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+`;
+
+const Input = styled.input`
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #4285f4;
+    outline: none;
+  }
+`;
+
+const SubmitButton = styled.button`
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: rgb(254, 77, 1);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgb(229, 69, 1);
+  }
+`;
+
+const EmailResult = styled.p`
+  font-size: 16px;
+  color: green;
+  margin-top: 3%;
+  font-weight: bold;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-weight: bold;
+  margin-top: 3%;
+`;
+
+const Hr = styled.hr`
+  color: rgba(184, 191, 199, 0.4);
+  width: 60%;
+  margin-bottom: 30px;
+`;

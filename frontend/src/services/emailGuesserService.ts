@@ -1,14 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
-const emailGuesserService = async (
+const getEmail = async (
   firstName: string,
   lastName: string,
   companyDomain: string
-) => {
-  const emailGuesserUrl = 'http://localhost:3001/email';
+): Promise<string> => {
+  const emailGuesserUrl: string = 'http://localhost:3001/email';
 
   try {
-    const result = await axios.get(emailGuesserUrl, {
+    const result: AxiosResponse<string> = await axios.get(emailGuesserUrl, {
       params: {
         firstName,
         lastName,
@@ -21,4 +21,4 @@ const emailGuesserService = async (
   }
 };
 
-export default emailGuesserService;
+export default getEmail;
