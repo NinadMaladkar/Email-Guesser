@@ -1,3 +1,25 @@
+# Proposed Solution
+- A simple UI that shows the form to a user where the user can check for contact's email
+- A backend which stores all the given emails and helps build the contact's email
+
+## Libraries/ Tools used
+- Typescript
+- React
+- Styled components
+- NestJS
+- TypeORM
+- PostgreSQL
+
+## Screenshots
+Sequence Diagram - 
+
+![email-guesser-sequence-diagram](https://github.com/user-attachments/assets/6ce68e9c-ed66-447c-bb8a-fadb2d434040)
+
+
+![Email_guesser_success](https://github.com/user-attachments/assets/0b4a9d83-e32a-46f5-a3e4-610faf31199b)
+
+![Email_guesser_error](https://github.com/user-attachments/assets/648d06c9-d8ce-46c2-a5c4-ea5074459443)
+
 # Email Guesser
 
 Let's imagine that Babbel is offering a new service to other companies.
